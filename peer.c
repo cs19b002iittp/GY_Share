@@ -191,7 +191,7 @@ void sending()
         exit(1);             
     }
 
-    fprintf(fptr,"%d",sizeof(buffer));
+    fprintf(fptr,"%s",buffer);
     printf("File %d.txt is saved to folder %s\n",fileId, name);
     fclose(fptr);
     close(sock);
