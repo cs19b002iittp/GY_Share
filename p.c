@@ -39,6 +39,23 @@ void *connection_handler(void *socket_desc,fd_set current_sockets);
 struct st nodes[100];
 int n;
 
+struct node_info getnode_info(int fileId){ 
+    for(int z=0; z<n; z++){
+        for(int y=0; y<nodes[z].nfiles; y++){
+            if(fileId == nodes[z].files[y]){
+                struct node_info inf;
+                strcpy(inf.IP,nodes[z].IP);
+                inf.PORT=nodes[z].PORT;
+                printf("hi");
+                return inf;
+            }
+        }
+    }
+    struct node_info ginf;
+    printf("hello");
+    return ginf;
+}
+
 int main(int argc, char const *argv[])
 {
     printf("Enter the IP address of super node : ");
@@ -106,6 +123,8 @@ int main(int argc, char const *argv[])
 
     return 0;
 }
+
+
 
 //Calling receiving every 2 seconds
 void receive_thread(void *server_fd)
@@ -179,17 +198,11 @@ void *connection_handler(void *socket_desc,fd_set current_sockets)
     int valread;
     char buffer[2000] = {0};
     valread = recv(i, buffer, sizeof(buffer), 0);
-    int fileId = atoi(buffer);
-                    
-    for(int z=0; z<n; z++){
-        for(int y=0; y<nodes[z].nfiles; y++){
-            if(fileId == nodes[z].files[y]){
-                struct node_info inf;
-                strcpy(inf.IP,nodes[z].IP);
-                inf.PORT=nodes[z].PORT;
-                send(i, &inf, sizeof(inf), 0);
-            }
-        }
-    }
+    int fileId = atoi(buffer);              
+
+    struct node_info inf;
+    inf=getnode_info(fileId);
+    send(i, &inf, sizeof(inf), 0);
+            
     FD_CLR(i, &current_sockets);
 } 
